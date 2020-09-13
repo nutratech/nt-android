@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Nutratracker</string>
+    <string name="onBoard_summary">
+        You\'re arriving at this screen because the on-boarding steps haven\'t been completed.\n\n
+        Please press the \"Retry\" Button and continue through the prompts:\n\n
+
+        1) Permit storage and file access.\n
+        2) Download nt database from mirror.\n\n
+
+        Then you will be taken to the main application.
+    </string>
 </resources>
