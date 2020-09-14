@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -25,8 +24,8 @@ class OnBoardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-//        StrictMode.setThreadPolicy(policy)
+        log("Target DB version:    ${Settings.dbTarget}")
+        log("Installed DB version: N/A")
     }
 
     fun quit(view: View) {
@@ -36,6 +35,7 @@ class OnBoardActivity : AppCompatActivity() {
     private fun log(line: String) {
         val textView = TextView(this)
         textView.text = line
+        textView.setTextIsSelectable(true)
         textView.typeface = Typeface.createFromAsset(
             applicationContext.resources.assets,
             "font/droid_sans_mono.ttf"
@@ -136,7 +136,7 @@ class OnBoardActivity : AppCompatActivity() {
             runDownload(downloadUrl, fileName)
             buttonRetry.isEnabled = true
         }
-        builder.setNegativeButton("Cancel", null)
+        builder.setNegativeButton("Cancel") { _, _ -> log("ABORTED download!") }
 
         // Show alert
         runOnUiThread {
@@ -152,12 +152,8 @@ class OnBoardActivity : AppCompatActivity() {
         dbFolder.mkdirs()
 
         val request = DownloadManager.Request(Uri.parse(url))
-        request.setDescription("Some descrition")
-        request.setTitle("Some title")
-        request.setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_DOWNLOADS,
-            fileName
-        )
+        request.setDestinationInExternalFilesDir(this, null, "db/$fileName")
+//        request.setDestinationInExternalFilesDir(dbFolder.absolutePath, fileName)
 
         // get download service and enqueue file
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
