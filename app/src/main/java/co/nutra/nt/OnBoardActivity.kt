@@ -1,9 +1,7 @@
 package co.nutra.nt
 
-import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -63,10 +61,6 @@ class OnBoardActivity : AppCompatActivity() {
     }
 
     fun retry(view: View) {
-        // First allow read/write
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-
         // Download, unpack database
         // (Background thread)
         val ovThread = Thread {
