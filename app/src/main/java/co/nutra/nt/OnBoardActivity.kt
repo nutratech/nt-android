@@ -38,17 +38,19 @@ class OnBoardActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
 
-//        runOnUiThread {
-        // Add line
-        linearLayoutConsole.addView(textView)
+        runOnUiThread {
+            // Add line
+            linearLayoutConsole.addView(textView)
 
-        // Scroll
-        scrollViewConsole.post {
-            scrollViewConsole.fullScroll(
-                ScrollView.FOCUS_DOWN
-            )
+            // Scroll
+            scrollViewConsole.post {
+                scrollViewConsole.fullScroll(
+                    ScrollView.FOCUS_DOWN
+                )
+            }
+
+            linearLayoutConsole.refreshDrawableState()
         }
-//        }
     }
 
     fun retry(view: View) {
@@ -93,7 +95,7 @@ class OnBoardActivity : AppCompatActivity() {
             val nDownloads = targetFile["downloads"] as Int
             val creationDateStr = targetFile["created_on"].toString()
             val size = targetFile["size"] as Int
-            val sizeStr = "%.3f".format(size / 1000000.0)
+            val sizeStr = "%.1f".format(size / 1000.0)
             val downloadUrl = "$downloadsOverviewApiUrl/$targetFileName"
 
             // Prompt user to download large db file (> 5MB)
@@ -111,7 +113,7 @@ class OnBoardActivity : AppCompatActivity() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Download large file?")
         val message =
-            "Download nutra.db v${Settings.dbTarget}?\n\nSize: ${size}MB\nDownloads: ${nDownloads}\n\nCreated: ${creationDate}"
+            "Download nutra.db (v${Settings.dbTarget})?\n\nSize: $size KB\nDownloads: $nDownloads\n\nCreated: $creationDate"
         builder.setMessage(message)
         builder.setPositiveButton("OK") { _, _ ->
             startDownload(downloadUrl)
