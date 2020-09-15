@@ -70,7 +70,20 @@ class OnBoardActivity : AppCompatActivity() {
             runOnUiThread { buttonRetry.isEnabled = false }
 
             // Make "overview" network call
-            val downloadsOverviewStr: String = URL(downloadsOverviewApiUrl).readText()
+            var downloadsOverviewStr: String
+            try {
+                downloadsOverviewStr = URL(downloadsOverviewApiUrl).readText()
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(
+                        applicationContext,
+                        "ERROR: $e",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                runOnUiThread { buttonRetry.isEnabled = true }
+                return@Thread
+            }
 
             // Find the target file, if it exists
             val downloadsOverview: JSONArray =
@@ -102,7 +115,6 @@ class OnBoardActivity : AppCompatActivity() {
 
                 // Prompt user to download large db file (> 5MB)
                 showAlertDialogButtonClicked(
-                    view,
                     downloadUrl,
                     targetFileName,
                     nDownloads,
@@ -118,7 +130,6 @@ class OnBoardActivity : AppCompatActivity() {
     }
 
     private fun showAlertDialogButtonClicked(
-        view: View,
         downloadUrl: String,
         fileName: String,
         nDownloads: Int,
@@ -159,4 +170,12 @@ class OnBoardActivity : AppCompatActivity() {
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
     }
+
+//    fun download(link: String, path: String) {
+//        URL(link).openStream().use { input ->
+//            FileOutputStream(File(path)).use { output ->
+//                input.copyTo(output)
+//            }
+//        }
+//    }
 }
